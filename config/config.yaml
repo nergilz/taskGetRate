@@ -3,3 +3,7 @@ grinex_api_url: "https://grinex.io/api/v2/"
 grpc:
   port: "44044"
   timeout: 10h
+http_server: 
+  address: "localhost:8082"
+  timeout: 4s
+  idle_timeout: 30s

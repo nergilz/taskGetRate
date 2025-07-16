@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"github/nergilz/taskGetRate/internal/app"
 	"github/nergilz/taskGetRate/internal/config"
+	"github/nergilz/taskGetRate/internal/server"
 	"github/nergilz/taskGetRate/internal/service"
 	"github/nergilz/taskGetRate/internal/storage"
 	"github/nergilz/taskGetRate/internal/transport"
@@ -18,6 +20,10 @@ func main() {
 
 	logger := SetupLogger(cfg.Env)
 
+	ctx := context.Background()
+	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
+	defer cancel()
+
 	logger.Info("init config")
 
 	appTransport := transport.New(cfg.GrinexBaseUrl)
@@ -28,6 +34,9 @@ func main() {
 	go func() {
 		appRates.Run()
 	}()
+
+	handler := server.NewHandler(logger)
+	server.Run(ctx, handler.ServeMux)
 
 	shutdownCh := make(chan os.Signal, 1)
 	signal.Notify(shutdownCh, syscall.SIGTERM, syscall.SIGINT)

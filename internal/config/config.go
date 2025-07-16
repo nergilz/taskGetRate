@@ -18,6 +18,12 @@ type GRPCConfig struct {
 	Timeout time.Duration `yaml:"timeout"`
 }
 
+type HttpServer struct {
+	Address     string        `yaml:"address"`
+	Timeout     time.Duration `yaml:"timeout"`
+	IdleTimeout time.Duration `yaml:"idle_timout"`
+}
+
 func Load() *Config {
 	var cfg Config
 
